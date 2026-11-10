@@ -38,11 +38,9 @@ go.work
 go.work.sum
 
 # env file
-.env
 
 # Editor/IDE
 .idea/
-.vscode/
 
 # MacOS
 .DS_Store
@@ -117,3 +115,4 @@ xcuserdata/
 # The CASA evidence pack lives outside this repository on purpose: it maps every
 # control to its file and lists the advisories still open. See AGENTS.md.
 compliance/
+config.bat
