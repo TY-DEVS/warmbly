@@ -15,12 +15,10 @@ ARG BUILT_AT=""
 
 WORKDIR /app
 COPY go.mod go.sum ./
-RUN --mount=type=cache,id=gomod,target=/go/pkg/mod go mod download
+RUN go mod download
 
 COPY . .
-RUN --mount=type=cache,id=gomod,target=/go/pkg/mod \
-    --mount=type=cache,id=gobuild,target=/root/.cache/go-build \
-    CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build \
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build \
       -ldflags="-s -w \
         -X github.com/warmbly/warmbly/internal/version.Version=$VERSION \
         -X github.com/warmbly/warmbly/internal/version.Commit=$COMMIT \

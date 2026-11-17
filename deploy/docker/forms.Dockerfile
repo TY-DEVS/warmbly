@@ -21,8 +21,7 @@ COPY forms/ .
 # self-host build sets none of this and ships no source maps.
 ARG POSTHOG_CLI_PROJECT_ID=""
 ARG POSTHOG_CLI_HOST=""
-RUN --mount=type=secret,id=posthog_cli_api_key,required=false \
-    export POSTHOG_CLI_PROJECT_ID="$POSTHOG_CLI_PROJECT_ID" && \
+RUN export POSTHOG_CLI_PROJECT_ID="$POSTHOG_CLI_PROJECT_ID" && \
     export POSTHOG_CLI_HOST="$POSTHOG_CLI_HOST" && \
     export POSTHOG_CLI_API_KEY="$(cat /run/secrets/posthog_cli_api_key 2>/dev/null || true)" && \
     pnpm build && \
@@ -39,12 +38,10 @@ RUN apk add --no-cache git ca-certificates
 
 WORKDIR /app
 COPY go.mod go.sum ./
-RUN --mount=type=cache,id=gomod,target=/go/pkg/mod go mod download
+RUN go mod download
 
 COPY . .
-RUN --mount=type=cache,id=gomod,target=/go/pkg/mod \
-    --mount=type=cache,id=gobuild,target=/root/.cache/go-build \
-    CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags="-s -w -X github.com/warmbly/warmbly/internal/version.Version=$VERSION -X github.com/warmbly/warmbly/internal/version.Commit=$COMMIT -X github.com/warmbly/warmbly/internal/version.BuiltAt=$BUILT_AT" -o /out/forms ./cmd/forms
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -ldflags="-s -w -X github.com/warmbly/warmbly/internal/version.Version=$VERSION -X github.com/warmbly/warmbly/internal/version.Commit=$COMMIT -X github.com/warmbly/warmbly/internal/version.BuiltAt=$BUILT_AT" -o /out/forms ./cmd/forms
 
 # Runtime stage
 FROM alpine:3.23

@@ -31,9 +31,7 @@ ARG SENTRY_ORG=""
 ARG SENTRY_PROJECT=""
 ARG POSTHOG_CLI_PROJECT_ID=""
 ARG POSTHOG_CLI_HOST=""
-RUN --mount=type=secret,id=sentry_auth_token,required=false \
-    --mount=type=secret,id=posthog_cli_api_key,required=false \
-    export VITE_SENTRY_RELEASE="${VERSION:-$COMMIT}" && \
+RUN export VITE_SENTRY_RELEASE="${VERSION:-$COMMIT}" && \
     export SENTRY_ORG="$SENTRY_ORG" && \
     export SENTRY_PROJECT="$SENTRY_PROJECT" && \
     export SENTRY_AUTH_TOKEN="$(cat /run/secrets/sentry_auth_token 2>/dev/null || true)" && \

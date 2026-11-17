@@ -30,9 +30,7 @@ COPY scanner-networks.txt ./scanner-networks.txt
 
 # The binary is copied out of the (cache-mounted) target dir before the mount is
 # released, so the runtime stage can COPY it.
-RUN --mount=type=cache,id=cargo-registry,target=/usr/local/cargo/registry \
-    --mount=type=cache,id=cargo-target,target=/app/target \
-    set -eux; \
+RUN set -eux; \
     if [ -n "$CARGO_FEATURES" ]; then FEAT="--features $CARGO_FEATURES"; else FEAT=""; fi; \
     export OPENSSL_STATIC=1; \
     cargo build --release $FEAT; \
