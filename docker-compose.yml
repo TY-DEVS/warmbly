@@ -160,7 +160,7 @@ services:
       POSTGRES_PASSWORD: warmbly
       POSTGRES_DB: warmbly_dev
     volumes:
-    - ${WARMBLY_PG_DATA:-postgres_data}:/var/lib/postgresql/data
+    - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test:
       - CMD-SHELL
@@ -174,7 +174,7 @@ services:
     restart: unless-stopped
     image: redis:7-alpine
     volumes:
-    - ${WARMBLY_REDIS_DATA:-redis_data}:/data
+    - redis_data:/data
     healthcheck:
       test:
       - CMD
@@ -195,7 +195,7 @@ services:
     - -m
     - '8222'
     volumes:
-    - ${WARMBLY_NATS_DATA:-nats_data}:/data
+    - nats_data:/data
     healthcheck:
       test:
       - CMD
@@ -441,7 +441,7 @@ services:
       UPDATER_URL: ${UPDATER_URL:-http://updater:8095}
       UPDATER_TOKEN: ${UPDATER_TOKEN:-${INTERNAL_API_TOKEN:-local-dev-internal-token}}
     volumes:
-    - ${WARMBLY_BLOBS:-blobs}:/data/blobs
+    - blobs:/data/blobs
     depends_on:
       postgres:
         condition: service_healthy
@@ -678,7 +678,7 @@ services:
       TYPESAFE_ENDPOINT: ${TYPESAFE_ENDPOINT:-}
       INBOX_TAGGING_ENABLED: ${INBOX_TAGGING_ENABLED:-false}
     volumes:
-    - ${WARMBLY_BLOBS:-blobs}:/data/blobs
+    - blobs:/data/blobs
     depends_on:
       backend:
         condition: service_healthy
@@ -856,8 +856,8 @@ services:
       BOX_OUTLOOK_CLIENT_ID: ${BOX_OUTLOOK_CLIENT_ID:-}
       BOX_OUTLOOK_CLIENT_SECRET: ${BOX_OUTLOOK_CLIENT_SECRET:-}
     volumes:
-    - ${WARMBLY_BLOBS:-blobs}:/data/blobs
-    - ${WARMBLY_WORKER_STATE:-worker_state}:/data/state
+    - blobs:/data/blobs
+    - worker_state:/data/state
     depends_on:
       backend:
         condition: service_healthy
@@ -1000,8 +1000,7 @@ services:
     working_dir: ${WARMBLY_REPO_DIR:-${PWD}}
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - ${WARMBLY_REPO_DIR:-${PWD}}:${WARMBLY_REPO_DIR:-${PWD}}
-    - ${WARMBLY_UPDATER_STATE:-updater_state}:/var/lib/warmbly-updater
+    - updater_state:/var/lib/warmbly-updater
     profiles:
     - updater
   seed:
